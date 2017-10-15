@@ -15,10 +15,10 @@ async function do() {
         data: new Buffer(JSON.stringify(a)).toString("base64")
       })))
 
+    console.log(res.data)
     if (err) {
       console.log(err.message)
     }
-  }
 }
 ```
 
@@ -29,9 +29,11 @@ async function do() {
     const json = { "msg": "sup" }
 
     try {
-        await axios.post(`${config.url}`, qs.stringify({
+        const res: AxiosResponse = await axios.post(`${config.url}`, qs.stringify({
             data: new Buffer(JSON.stringify(a)).toString("base64")
         }))
+        
+        console.log(res.data)
     } catch (err) {
         console.log((err) as AxiosError).message)
     }
