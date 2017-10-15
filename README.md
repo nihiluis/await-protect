@@ -7,6 +7,8 @@ Allows you to replace `try {} catch (e) {}`.
 Use this:
 
 ```typescript
+import protect from "await-protect"
+
 async function do() {
     const json = { "msg": "hey daisy" }
 
