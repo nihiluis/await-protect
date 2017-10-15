@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+      "allowJs": true,
+      //"sourceMap": true,
+      "target": "es5",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "outDir": "dist",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "forceConsistentCasingInFileNames": true,
+      "noFallthroughCasesInSwitch": false,
+      "noImplicitReturns": true,
+      "noUnusedLocals": false,
+      "noUnusedParameters": true,
+      "noImplicitUseStrict": true,
+      "allowUnreachableCode": true,
+      "pretty": true,
+      "strictNullChecks": true,
+      "lib": [
+        "es2015"
+      ],
+      "baseUrl": ".",
+      "paths": {
+        "*": ["*"]
+      }
+    }
+  }
+  
