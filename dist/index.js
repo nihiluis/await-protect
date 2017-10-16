@@ -40,7 +40,7 @@ function protect(fn) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    tuple = {};
+                    tuple = new Result();
                     return [4 /*yield*/, fn.then(function (val) { return tuple.res = val; }).catch(function (err) { return tuple.err = err; })];
                 case 1:
                     _a.sent();
@@ -50,3 +50,49 @@ function protect(fn) {
     });
 }
 exports.default = protect;
+var Result = /** @class */ (function () {
+    function Result() {
+    }
+    Result.prototype.ok = function () {
+        if (this.err) {
+            return false;
+        }
+        return true;
+    };
+    Result.prototype.unwrap = function () {
+        return this.res;
+    };
+    Result.prototype.unwrapErr = function () {
+        return this.err;
+    };
+    Result.prototype.to = function (a) {
+        var res = new Result();
+        if (this.res) {
+            res.res = a(this.res);
+        }
+        res.err = this.err;
+        return res;
+    };
+    Result.prototype.too = function (a, b) {
+        var res = new Result();
+        if (this.res) {
+            res.res = a(this.res);
+        }
+        if (this.err) {
+            res.err = b(this.err);
+        }
+        return res;
+    };
+    Result.err = function (err) {
+        var res = new Result();
+        res.err = err;
+        return res;
+    };
+    Result.ok = function (ok) {
+        var res = new Result();
+        res.res = ok;
+        return res;
+    };
+    return Result;
+}());
+exports.Result = Result;
