@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/nihiluis/await-protect/issues"
   },
+  "peerDependencies": {
+    "bluebird": "3.5.1"
+  },
   "homepage": "https://github.com/nihiluis/await-protect#readme"
 }
