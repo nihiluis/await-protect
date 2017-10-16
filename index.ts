@@ -6,9 +6,19 @@ interface PromiseLike<R> {
   export default async function protect<R, T>(fn: PromiseLike<R>): Promise<Result<R, T>> {
     const tuple: Result<R, T> = new Result()
   
-    await fn.then(val => tuple.res = val).catch(err => tuple.err = err)
+    try {
+      await fn.then(val => tuple.res = val).catch(err => tuple.err = err)
+    } catch (e) {
+      tuple.err = e
+    }
   
     return tuple
+  }
+  
+  export function gprotect<R, T>(fn: PromiseLike<R>): () => Promise<Result<R, T>> {
+    const hi = async () => await protect<R, T>(fn)
+  
+    return hi
   }
   
   export class Result<R, T> {
@@ -58,14 +68,14 @@ interface PromiseLike<R> {
     static err<T>(err: T): Result<any, T> {
       const res = new Result<any, T>()
       res.err = err
-    
+  
       return res
     }
   
     static ok<T>(ok: T): Result<T, any> {
       const res = new Result<T, any>()
       res.res = ok
-    
+  
       return res
     }
   }
