@@ -41,10 +41,8 @@ function protect(fn) {
             switch (_a.label) {
                 case 0:
                     tuple = {};
-                    // err neve rhappens?
                     return [4 /*yield*/, fn.then(function (val) { return tuple.res = val; }).catch(function (err) { return tuple.err = err; })];
                 case 1:
-                    // err neve rhappens?
                     _a.sent();
                     return [2 /*return*/, tuple];
             }
