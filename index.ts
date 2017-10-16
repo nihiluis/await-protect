@@ -1,29 +1,72 @@
 interface PromiseLike<R> {
     then: (val: any) => PromiseLike<R>
     catch: (err: any) => void
-}
-
-export default async function protect<R, T>(fn: PromiseLike<R>): Promise<Result<R, T>> {
+  }
+  
+  export default async function protect<R, T>(fn: PromiseLike<R>): Promise<Result<R, T>> {
     const tuple: Result<R, T> = new Result()
-
+  
     await fn.then(val => tuple.res = val).catch(err => tuple.err = err)
-
+  
     return tuple
-}
-
-class Result<R, T> {
+  }
+  
+  export class Result<R, T> {
     res?: R
     err?: T
-
+  
     ok(): boolean {
-        if (this.err) {
-            return false
-        }
-
-        return true
+      if (this.err) {
+        return false
+      }
+  
+      return true
     }
-
+  
     unwrap(): R {
-        return this.res!!
+      return this.res!!
     }
-}
+  
+    unwrapErr(): T {
+      return this.err!!
+    }
+  
+    to<A>(a: (r: R) => A): Result<A, T> {
+      const res = new Result<A, T>()
+      if (this.res) {
+        res.res = a(this.res)
+      }
+  
+      res.err = this.err
+  
+      return res
+    }
+  
+    too<A, B>(a: (r: R) => A, b: (err: T) => B): Result<A, B> {
+      const res = new Result<A, B>()
+      if (this.res) {
+        res.res = a(this.res)
+      }
+  
+      if (this.err) {
+        res.err = b(this.err)
+      }
+  
+      return res
+    }
+  
+    static err<T>(err: T): Result<any, T> {
+      const res = new Result<any, T>()
+      res.err = err
+    
+      return res
+    }
+  
+    static ok<T>(ok: T): Result<T, any> {
+      const res = new Result<T, any>()
+      res.res = ok
+    
+      return res
+    }
+  }
+  
