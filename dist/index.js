@@ -36,20 +36,58 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 function protect(fn) {
     return __awaiter(this, void 0, void 0, function () {
-        var tuple;
+        var tuple, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     tuple = new Result();
-                    return [4 /*yield*/, fn.then(function (val) { return tuple.res = val; }).catch(function (err) { return tuple.err = err; })];
+                    _a.label = 1;
                 case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, fn.then(function (val) { return tuple.res = val; }).catch(function (err) { return tuple.err = err; })];
+                case 2:
                     _a.sent();
-                    return [2 /*return*/, tuple];
+                    return [3 /*break*/, 4];
+                case 3:
+                    e_1 = _a.sent();
+                    tuple.err = e_1;
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/, tuple];
             }
         });
     });
 }
 exports.default = protect;
+function protectAll(fns) {
+    return __awaiter(this, void 0, void 0, function () {
+        var tuples, newFns;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    tuples = [];
+                    newFns = fns.map(function (fn, i) {
+                        return fn.then(function (val) { return tuples[i] = Result.ok(val); }).catch(function (err) { return tuples[i] = Result.err(err); });
+                    });
+                    return [4 /*yield*/, Promise.all(newFns)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, tuples];
+            }
+        });
+    });
+}
+exports.protectAll = protectAll;
+function gprotect(fn) {
+    var _this = this;
+    var hi = function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, protect(fn)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    }); }); };
+    return hi;
+}
+exports.gprotect = gprotect;
 var Result = /** @class */ (function () {
     function Result() {
     }
