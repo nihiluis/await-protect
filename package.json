@@ -1,6 +1,6 @@
 {
   "name": "await-protect",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "concise error handling when using promise await ",
   "main": "dist/index.js",
   "scripts": {
@@ -17,9 +17,6 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nihiluis/await-protect/issues"
-  },
-  "peerDependencies": {
-    "bluebird": "3.5.1"
   },
   "homepage": "https://github.com/nihiluis/await-protect#readme"
 }

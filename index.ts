@@ -37,23 +37,7 @@ export class Result<R, T> {
   res?: R
   err?: T
 
-  ok(): boolean {
-    if (this.err) {
-      return false
-    }
-
-    return true
-  }
-
-  unwrap(): R {
-    return this.res!!
-  }
-
-  unwrapErr(): T {
-    return this.err!!
-  }
-
-  to<A>(a: (r: R) => A): Result<A, T> {
+  ok_to<A>(a: (r: R) => A): Result<A, T> {
     const res = new Result<A, T>()
     if (this.res) {
       res.res = a(this.res)
@@ -64,7 +48,7 @@ export class Result<R, T> {
     return res
   }
 
-  too<A, B>(a: (r: R) => A, b: (err: T) => B): Result<A, B> {
+  to<A, B>(a: (r: R) => A, b: (err: T) => B): Result<A, B> {
     const res = new Result<A, B>()
     if (this.res) {
       res.res = a(this.res)

@@ -91,19 +91,7 @@ exports.gprotect = gprotect;
 var Result = /** @class */ (function () {
     function Result() {
     }
-    Result.prototype.ok = function () {
-        if (this.err) {
-            return false;
-        }
-        return true;
-    };
-    Result.prototype.unwrap = function () {
-        return this.res;
-    };
-    Result.prototype.unwrapErr = function () {
-        return this.err;
-    };
-    Result.prototype.to = function (a) {
+    Result.prototype.ok_to = function (a) {
         var res = new Result();
         if (this.res) {
             res.res = a(this.res);
@@ -111,7 +99,7 @@ var Result = /** @class */ (function () {
         res.err = this.err;
         return res;
     };
-    Result.prototype.too = function (a, b) {
+    Result.prototype.to = function (a, b) {
         var res = new Result();
         if (this.res) {
             res.res = a(this.res);
