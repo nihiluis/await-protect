@@ -37,7 +37,7 @@ export class Result<R, T> {
   res?: R
   err?: T
 
-  ok_to<A>(a: (r: R) => A): Result<A, T> {
+  okTo<A>(a: (r: R) => A): Result<A, T> {
     const res = new Result<A, T>()
     if (this.res) {
       res.res = a(this.res)

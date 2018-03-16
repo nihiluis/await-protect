@@ -91,7 +91,7 @@ exports.gprotect = gprotect;
 var Result = /** @class */ (function () {
     function Result() {
     }
-    Result.prototype.ok_to = function (a) {
+    Result.prototype.okTo = function (a) {
         var res = new Result();
         if (this.res) {
             res.res = a(this.res);
