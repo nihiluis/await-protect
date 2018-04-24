@@ -1,6 +1,6 @@
 {
   "name": "await-protect",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Concise error handling when using promise await",
   "main": "index.ts",
   "scripts": {
