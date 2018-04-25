@@ -1,10 +1,11 @@
 {
   "name": "await-protect",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Concise error handling when using promise await",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "postinstall": "tsc -p tsconfig.json"
   },
   "repository": {
     "type": "git",
