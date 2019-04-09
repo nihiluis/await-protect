@@ -1,8 +1,17 @@
+/**
+ * Promise (or similar) interface
+ */
 interface PromiseLike<R> {
   then: (val: any) => PromiseLike<R>
   catch: (err: any) => void
 }
 
+/**
+ * Wraps errors from your Promise (or similar) object into a [Result] which you can later destructure,
+ * avoiding try { } catch (e) { } boilerplate.
+ * 
+ * @param fn The promise which is to be wrapped.
+ */
 export default async function protect<R, T>(fn: PromiseLike<R>): Promise<Result<R, T>> {
   const tuple: Result<R, T> = new Result()
 
@@ -15,6 +24,12 @@ export default async function protect<R, T>(fn: PromiseLike<R>): Promise<Result<
   return tuple
 }
 
+/**
+ * Wraps errors from multiple Promise (or similar) objects into a Result array which you can later 
+ * iterate and then destructure, avoiding try { } catch (e) { } boilerplate.
+ * 
+ * @param fns The promises which are to be wrapped.
+ */
 export async function protectAll<R, T>(fns: PromiseLike<R>[]): Promise<Result<R, T>[]> {
   const tuples: Result<R, T>[] = []
 
@@ -27,40 +42,24 @@ export async function protectAll<R, T>(fns: PromiseLike<R>[]): Promise<Result<R,
   return tuples
 }
 
-export function gprotect<R, T>(fn: PromiseLike<R>): () => Promise<Result<R, T>> {
-  const hi = async () => await protect<R, T>(fn)
-
-  return hi
+/**
+ * Wraps protect into a function to be lazily evaluated. 
+ * 
+ * This can for example be used combined with redux-saga (for React).
+ * 
+ * @param fn 
+ */
+export function lazyProtect<R, T>(fn: PromiseLike<R>): () => Promise<Result<R, T>> {
+  return async () => await protect<R, T>(fn)
 }
 
-export class Result<R, T> {
-  res?: R
-  err?: T
-
-  okTo<A>(a: (r: R) => A): Result<A, T> {
-    const res = new Result<A, T>()
-    if (this.res) {
-      res.res = a(this.res)
-    }
-
-    res.err = this.err
-
-    return res
-  }
-
-  to<A, B>(a: (r: R) => A, b: (err: T) => B): Result<A, B> {
-    const res = new Result<A, B>()
-    if (this.res) {
-      res.res = a(this.res)
-    }
-
-    if (this.err) {
-      res.err = b(this.err)
-    }
-
-    return res
-  }
-
+/**
+ * Wraps the return objects or occurred error in one additional object.
+ */
+export class Result<Ok, Error> {
+  res?: Ok
+  err?: Error
+  
   static err<T>(err: T): Result<any, T> {
     const res = new Result<any, T>()
     res.err = err
