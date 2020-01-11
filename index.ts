@@ -16,7 +16,7 @@ export default async function protect<R, T>(fn: PromiseLike<R>): Promise<Result<
   const tuple: Result<R, T> = new Result()
 
   try {
-    await fn.then(val => tuple.res = val).catch(err => tuple.err = err)
+    fn.then(val => tuple.ok = val).catch(err => tuple.err = err)
   } catch (e) {
     tuple.err = e
   }
@@ -57,7 +57,7 @@ export function lazyProtect<R, T>(fn: PromiseLike<R>): () => Promise<Result<R, T
  * Wraps the return objects or occurred error in one additional object.
  */
 export class Result<Ok, Error> {
-  res?: Ok
+  ok?: Ok
   err?: Error
   
   static err<T>(err: T): Result<any, T> {
@@ -69,7 +69,7 @@ export class Result<Ok, Error> {
 
   static ok<T>(ok: T): Result<T, any> {
     const res = new Result<T, any>()
-    res.res = ok
+    res.ok = ok
 
     return res
   }
