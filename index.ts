@@ -16,7 +16,7 @@ export default async function protect<R, T>(fn: PromiseLike<R>): Promise<Result<
   const tuple: Result<R, T> = new Result()
 
   try {
-    fn.then(val => tuple.ok = val).catch(err => tuple.err = err)
+    await fn.then(val => tuple.ok = val).catch(err => tuple.err = err)
   } catch (e) {
     tuple.err = e
   }
