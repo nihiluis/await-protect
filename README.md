@@ -9,7 +9,7 @@ Note: This will sometimes force you to add ! where destructuring is concerned.
 import protect from "await-protect"
 
 async function do() {
-    const json = { "msg": "hi." }
+    const json = { "msg": "hello." }
 
     const { res, err } = await protect<AxiosResponse, AxiosError>(
       axios.post(`${config.url}`, qs.stringify({
