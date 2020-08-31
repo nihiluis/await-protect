@@ -1,17 +1,17 @@
 # await-protect
-Wraps Promises into a Result object, which you can then await on and destructure in a Rust-esque way.
-This will allow you to avoid the use of try-catch and may be more comfortable when wanting to type exceptions.
 
-Note: This will sometimes force you to add ! where destructuring is concerned.
+Wraps promises to destructure values easily without having to nest with try catch.
+Gives easier error typing as well.
 
 # Usage
+
 ```typescript
 import protect from "await-protect"
 
 async function do() {
-    const json = { "msg": "hello." }
+    const json = { "msg": "Hello" }
 
-    const { res, err } = await protect<AxiosResponse, AxiosError>(
+    const [res, err] = await protect(
       axios.post(`${config.url}`, qs.stringify({
         data: new Buffer(JSON.stringify(a)).toString("base64")
       })))
@@ -20,6 +20,8 @@ async function do() {
         console.log(err)
         return
     }
+
+    console.log(res.data)
 }
 ```
 
@@ -27,16 +29,16 @@ Instead of this:
 
 ```typescript
 async function do() {
-    const json = { "msg": "sup" }
+    const json = { "msg": "Hello" }
 
     try {
         const res: AxiosResponse = await axios.post(`${config.url}`, qs.stringify({
             data: new Buffer(JSON.stringify(a)).toString("base64")
         }))
-        
+
         console.log(res.data)
     } catch (err) {
-        console.log((err) as AxiosError).message)
+        console.log(err)
     }
 }
 ```

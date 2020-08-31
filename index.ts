@@ -1,10 +1,4 @@
-/**
- * Promise (or similar) interface
- */
-interface PromiseLike<R> {
-  then: (val: any) => PromiseLike<R>
-  catch: (err: any) => void
-}
+type Result<R, T extends Error> = [R | undefined, T | undefined]
 
 /**
  * Wraps errors from your Promise (or similar) object into a [Result] which you can later destructure,
@@ -12,16 +6,16 @@ interface PromiseLike<R> {
  * 
  * @param fn The promise which is to be wrapped.
  */
-export default async function protect<R, T>(fn: PromiseLike<R>): Promise<Result<R, T>> {
-  const tuple: Result<R, T> = new Result()
+export default async function protect<R, T extends Error>(fn: Promise<R>): Promise<Result<R, T>> {
+  const res: Result<R, T> = [undefined, undefined]
 
   try {
-    await fn.then(val => tuple.ok = val).catch(err => tuple.err = err)
+    await fn.then(val => res[0] = val).catch((err: T) => res[1] = err)
   } catch (e) {
-    tuple.err = e
+    res[1] = e
   }
 
-  return tuple
+  return res
 }
 
 /**
@@ -30,11 +24,19 @@ export default async function protect<R, T>(fn: PromiseLike<R>): Promise<Result<
  * 
  * @param fns The promises which are to be wrapped.
  */
-export async function protectAll<R, T>(fns: PromiseLike<R>[]): Promise<Result<R, T>[]> {
+export async function protectAll<R, T extends Error>(fns: Promise<R>[]): Promise<Result<R, T>[]> {
   const tuples: Result<R, T>[] = []
 
-  const newFns = fns.map((fn, i) => {
-    return fn.then(val => tuples[i] = Result.ok(val)).catch(err => tuples[i] = Result.err(err))
+  const newFns = fns.map(async (fn, i) => {
+    tuples[i] = [undefined, undefined]
+
+    try {
+      const val = await fn
+      return tuples[i][0] = val
+    }
+    catch (err) {
+      return tuples[i][1] = err
+    }
   })
 
   await Promise.all(newFns)
@@ -49,28 +51,6 @@ export async function protectAll<R, T>(fns: PromiseLike<R>[]): Promise<Result<R,
  * 
  * @param fn 
  */
-export function lazyProtect<R, T>(fn: PromiseLike<R>): () => Promise<Result<R, T>> {
+export function lazyProtect<R, T extends Error>(fn: Promise<R>): () => Promise<Result<R, T>> {
   return async () => await protect<R, T>(fn)
-}
-
-/**
- * Wraps the return objects or occurred error in one additional object.
- */
-export class Result<Ok, Error> {
-  ok?: Ok
-  err?: Error
-  
-  static err<T>(err: T): Result<any, T> {
-    const res = new Result<any, T>()
-    res.err = err
-
-    return res
-  }
-
-  static ok<T>(ok: T): Result<T, any> {
-    const res = new Result<T, any>()
-    res.ok = ok
-
-    return res
-  }
 }

@@ -1,6 +1,3 @@
-export interface PromiseResult<R, T> {
-    res?: R
-    err?: T
-}
+export type Result<R, T extends Error> = [R | undefined, T | undefined]
 
-export default function protect<R, T>(fn: Promise<R>): Promise<PromiseResult<R, T>>
+export default function protect<R, T extends Error>(fn: Promise<R>): Promise<Result<R, T>>
