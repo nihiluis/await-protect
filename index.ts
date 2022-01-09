@@ -12,7 +12,7 @@ export default async function protect<R, T extends Error>(fn: Promise<R>): Promi
   try {
     await fn.then(val => res[0] = val).catch((err: T) => res[1] = err)
   } catch (e) {
-    res[1] = e
+    res[1] = e as T
   }
 
   return res
@@ -35,7 +35,7 @@ export async function protectAll<R, T extends Error>(fns: Promise<R>[]): Promise
       return tuples[i][0] = val
     }
     catch (err) {
-      return tuples[i][1] = err
+      return tuples[i][1] = err as T
     }
   })
 
