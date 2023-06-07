@@ -32,10 +32,10 @@ export async function protectAll<R, T extends Error>(fns: Promise<R>[]): Promise
 
     try {
       const val = await fn
-      return tuples[i][0] = val
+      return tuples[i]![0] = val
     }
     catch (err) {
-      return tuples[i][1] = err as T
+      return tuples[i]![1] = err as T
     }
   })
 
