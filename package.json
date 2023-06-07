@@ -1,6 +1,6 @@
 {
   "name": "await-protect",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Concise error handling when using promise await",
   "main": "dist/index.js",
   "scripts": {
@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/nihiluis/await-protect/issues"
   },
-  "homepage": "https://github.com/nihiluis/await-protect#readme"
+  "homepage": "https://github.com/nihiluis/await-protect#readme",
+  "devDependencies": {
+    "typescript": "^5.1.3"
+  }
 }
