@@ -1,29 +1,14 @@
 {
-    "compilerOptions": {
-      "allowJs": true,
-      //"sourceMap": true,
-      "target": "es5",
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "outDir": "dist",
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "forceConsistentCasingInFileNames": true,
-      "noFallthroughCasesInSwitch": false,
-      "noImplicitReturns": true,
-      "noUnusedLocals": false,
-      "noUnusedParameters": true,
-      "allowUnreachableCode": true,
-      "pretty": true,
-      "strictNullChecks": true,
-      "lib": [
-        "es2015",
-        "dom"
-      ],
-      "baseUrl": ".",
-      "paths": {
-        "*": ["*"]
-      }
-    }
+  "compilerOptions": {
+    "declaration": true,
+    "module": "Node16",
+    "outDir": "dist",
+    "strict": true,
+    "target": "es2022",
+    "resolveJsonModule": true,
+    "moduleResolution": "node16"
+  },
+  "ts-node": {
+    "esm": true
   }
-  
+}
