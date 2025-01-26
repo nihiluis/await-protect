@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:test": "pnpm run test && pnpm run clean && pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
