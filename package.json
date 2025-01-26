@@ -1,7 +1,7 @@
 {
   "name": "await-protect",
   "version": "1.0.18",
-  "description": "Concise error handling when using promise await",
+  "description": "Concise error handling when using await on promises.",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
