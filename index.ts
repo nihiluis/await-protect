@@ -1,10 +1,13 @@
 type Result<R, T extends Error> = [R | undefined, T | undefined];
 
 /**
- * Wraps errors from your Promise (or similar) object into a [Result] which you can later destructure,
- * avoiding try { } catch (e) { } boilerplate.
+ * Wraps a Promise in a Result tuple that contains either the resolved value or the error.
+ * This helps avoid try-catch boilerplate by providing a more functional approach to error handling.
  *
- * @param fn The promise which is to be wrapped.
+ * @param fn - The promise to be wrapped
+ * @returns A Promise that resolves to a tuple containing either [value, undefined] or [undefined, error]
+ * @template R - The type of the successful result
+ * @template T - The type of the error, must extend Error
  */
 export default async function protect<R, T extends Error>(
   fn: Promise<R>
@@ -23,10 +26,13 @@ export default async function protect<R, T extends Error>(
 export { protect };
 
 /**
- * Wraps errors from multiple Promise (or similar) objects into a Result array which you can later
- * iterate and then destructure, avoiding try { } catch (e) { } boilerplate.
+ * Wraps multiple Promises in Result tuples that contain either their resolved values or errors.
+ * Processes all promises concurrently and maintains the original order in the returned array.
  *
- * @param fns The promises which are to be wrapped.
+ * @param fns - An array of promises to be wrapped
+ * @returns A Promise that resolves to an array of Result tuples
+ * @template R - The type of the successful results
+ * @template T - The type of the errors, must extend Error
  */
 export async function protectAll<R, T extends Error>(
   fns: Promise<R>[]
@@ -50,11 +56,14 @@ export async function protectAll<R, T extends Error>(
 }
 
 /**
- * Wraps protect into a function to be lazily evaluated.
+ * Creates a lazy-evaluated version of the protect function.
+ * Returns a function that, when called, will execute the protected promise.
+ * Useful for scenarios where you want to delay the execution, such as in Redux Saga effects.
  *
- * This can for example be used combined with redux-saga (for React).
- *
- * @param fn
+ * @param fn - The promise to be wrapped
+ * @returns A function that when called returns a Promise resolving to a Result tuple
+ * @template R - The type of the successful result
+ * @template T - The type of the error, must extend Error
  */
 export function lazyProtect<R, T extends Error>(
   fn: Promise<R>

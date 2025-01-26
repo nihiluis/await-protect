@@ -1,44 +1,184 @@
 # await-protect
 
-Wraps promises to destructure values easily without having to nest with try catch.
-Gives easier error typing as well.
+A lightweight TypeScript utility that simplifies promise error handling by wrapping promises in a Result type, eliminating nested try-catch blocks and providing better error typing.
 
-# Usage
+## Installation
+
+```bash
+npm install await-protect
+# or
+yarn add await-protect
+# or
+pnpm add await-protect
+# or
+bun add await-protect
+```
+
+## Features
+
+- 🎯 Clean error handling without try-catch blocks
+- 💪 Full TypeScript support
+- 🛡️ Type-safe error handling
+- 🔄 Support for handling multiple promises
+- 🦥 Lazy evaluation support
+- 🔍 Optional type-safe validation with Zod
+
+## Basic Usage
 
 ```typescript
-import protect from "await-protect"
+import { protect } from "await-protect"
 
-async function do() {
-    const json = { "msg": "Hello" }
+async function fetchData() {
+    // Returns [result, error] tuple
+    const [response, error] = await protect(
+        fetch('https://api.example.com/data')
+    )
 
-    const [res, err] = await protect(
-      axios.post(`${config.url}`, qs.stringify({
-        data: new Buffer(JSON.stringify(a)).toString("base64")
-      })))
-
-    if (err) {
-        console.log(err)
+    if (error) {
+        console.error('Failed to fetch:', error)
         return
     }
 
-    console.log(res.data)
+    // TypeScript knows response is defined here
+    const data = await response.json()
+    console.log(data)
 }
 ```
 
-Instead of this:
+**With Zod:**
 
 ```typescript
-async function do() {
-    const json = { "msg": "Hello" }
+import { protectWithSchema } from "await-protect/zod";
+import { z } from "zod";
 
-    try {
-        const res: AxiosResponse = await axios.post(`${config.url}`, qs.stringify({
-            data: new Buffer(JSON.stringify(a)).toString("base64")
-        }))
+// Define your schema
+const UserSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string().email(),
+  age: z.number().min(0).optional(),
+  roles: z.array(z.string())
+});
 
-        console.log(res.data)
-    } catch (err) {
-        console.log(err)
+type User = z.infer<typeof UserSchema>;
+
+async function fetchUser(id: number) {
+  const [user, error] = await protectWithSchema(
+    fetch(`/api/users/${id}`)
+      .then(r => r.json()),
+    UserSchema
+  );
+
+  if (error) {
+    if (error instanceof z.ZodError) {
+      console.error('Invalid data format:', error.errors);
+    } else {
+      console.error('Failed to fetch:', error);
     }
+    return;
+  }
+
+  console.log(`Found user ${user.name} with ${user.roles.length} roles`);
+  return user;
+}
+```
+
+## Comparison with Traditional Try-Catch
+
+### With await-protect:
+```typescript
+async function fetchUser() {
+    const [user, error] = await protect(api.getUser(123))
+    
+    if (error) {
+        console.error('Failed to fetch user:', error)
+        return
+    }
+    
+    return user
+}
+```
+
+### Traditional approach:
+```typescript
+async function fetchUser() {
+    try {
+        const user = await api.getUser(123)
+        return user
+    } catch (error) {
+        console.error('Failed to fetch user:', error)
+        return
+    }
+}
+```
+
+## API Reference
+
+### `protect<R, T extends Error>(promise: Promise<R>): Promise<[R | undefined, T | undefined]>`
+
+Wraps a single promise and returns a tuple containing either the result or error.
+
+```typescript
+const [result, error] = await protect(myPromise)
+```
+
+### `protectAll<R, T extends Error>(promises: Promise<R>[]): Promise<[R | undefined, T | undefined][]>`
+
+Handles multiple promises simultaneously and returns an array of result tuples.
+
+```typescript
+const results = await protectAll([
+    fetch('api/users'),
+    fetch('api/posts'),
+    fetch('api/comments')
+])
+
+results.forEach(([result, error], index) => {
+    if (error) {
+        console.error(`Request ${index} failed:`, error)
+        return
+    }
+    console.log(`Request ${index} succeeded:`, result)
+})
+```
+
+### `lazyProtect<R, T extends Error>(promise: Promise<R>): () => Promise<[R | undefined, T | undefined]>`
+
+Creates a lazy-evaluated promise wrapper, useful for Redux-Saga or similar scenarios.
+
+```typescript
+const lazyFetch = lazyProtect(fetch('api/data'))
+// Later...
+const [result, error] = await lazyFetch()
+```
+
+### `protectWithSchema<R, T extends Error>(promise: Promise<R>, schema: z.ZodType<R>): Promise<[R | undefined, T | undefined]>`
+
+Wraps a promise and validates its result against a Zod schema, providing type-safe validation of API responses.
+
+```typescript
+import { z } from 'zod'
+import { protectWithSchema } from 'await-protect/zod'
+
+// Define your schema
+const UserSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    email: z.string().email()
+})
+
+async function fetchUser() {
+    const [user, error] = await protectWithSchema(
+        fetch('api/user').then(r => r.json()),
+        UserSchema
+    )
+    
+    if (error) {
+        console.error('Failed to fetch or validate user:', error)
+        return
+    }
+    
+    // TypeScript knows user matches UserSchema type
+    console.log(user.name)
 }
 ```

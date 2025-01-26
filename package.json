@@ -23,5 +23,11 @@
   "homepage": "https://github.com/nihiluis/await-protect#readme",
   "devDependencies": {
     "typescript": "^5.5.4"
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "zod": "^3.24.1"
   }
 }
