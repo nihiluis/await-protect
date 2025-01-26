@@ -8,6 +8,8 @@
     "resolveJsonModule": true,
     "moduleResolution": "node16"
   },
+  "include": ["index.ts", "zod.ts"],
+  "exclude": ["**/*.test.ts", "vitest.config.ts"],
   "ts-node": {
     "esm": true
   }

@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { protect } from "./index.js";
+import { z } from 'zod'
+import { protect } from './index.js'
 
-type Result<R, T extends Error> = [R | undefined, T | undefined];
+type Result<R, T extends Error> = [R | undefined, T | undefined]
 
 /**
  * Wraps a Promise in a Result tuple that contains either the validated resolved value or the error.
@@ -17,16 +17,16 @@ export async function protectWithSchema<R, T extends Error>(
   fn: Promise<R>,
   schema: z.ZodType<R>
 ): Promise<Result<R, T>> {
-  const [result, error] = await protect<R, T>(fn);
+  const [result, error] = await protect<R, T>(fn)
 
   if (error) {
-    return [undefined, error];
+    return [undefined, error]
   }
 
   try {
-    const validated = schema.parse(result);
-    return [validated, undefined];
+    const validated = schema.parse(result)
+    return [validated, undefined]
   } catch (validationError) {
-    return [undefined, validationError as T];
+    return [undefined, validationError as T]
   }
 }

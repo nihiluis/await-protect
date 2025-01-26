@@ -1,4 +1,4 @@
-type Result<R, T extends Error> = [R | undefined, T | undefined];
+type Result<R, T extends Error> = [R | undefined, T | undefined]
 
 /**
  * Wraps a Promise in a Result tuple that contains either the resolved value or the error.
@@ -12,18 +12,18 @@ type Result<R, T extends Error> = [R | undefined, T | undefined];
 export default async function protect<R, T extends Error>(
   fn: Promise<R>
 ): Promise<Result<R, T>> {
-  const res: Result<R, T> = [undefined, undefined];
+  const res: Result<R, T> = [undefined, undefined]
 
   try {
-    await fn.then((val) => (res[0] = val)).catch((err: T) => (res[1] = err));
+    await fn.then((val) => (res[0] = val)).catch((err: T) => (res[1] = err))
   } catch (e) {
-    res[1] = e as T;
+    res[1] = e as T
   }
 
-  return res;
+  return res
 }
 
-export { protect };
+export { protect }
 
 /**
  * Wraps multiple Promises in Result tuples that contain either their resolved values or errors.
@@ -37,36 +37,20 @@ export { protect };
 export async function protectAll<R, T extends Error>(
   fns: Promise<R>[]
 ): Promise<Result<R, T>[]> {
-  const tuples: Result<R, T>[] = [];
+  const tuples: Result<R, T>[] = []
 
   const newFns = fns.map(async (fn, i) => {
-    tuples[i] = [undefined, undefined];
+    tuples[i] = [undefined, undefined]
 
     try {
-      const val = await fn;
-      return (tuples[i]![0] = val);
+      const val = await fn
+      return (tuples[i]![0] = val)
     } catch (err) {
-      return (tuples[i]![1] = err as T);
+      return (tuples[i]![1] = err as T)
     }
-  });
+  })
 
-  await Promise.all(newFns);
+  await Promise.all(newFns)
 
-  return tuples;
-}
-
-/**
- * Creates a lazy-evaluated version of the protect function.
- * Returns a function that, when called, will execute the protected promise.
- * Useful for scenarios where you want to delay the execution, such as in Redux Saga effects.
- *
- * @param fn - The promise to be wrapped
- * @returns A function that when called returns a Promise resolving to a Result tuple
- * @template R - The type of the successful result
- * @template T - The type of the error, must extend Error
- */
-export function lazyProtect<R, T extends Error>(
-  fn: Promise<R>
-): () => Promise<Result<R, T>> {
-  return async () => await protect<R, T>(fn);
+  return tuples
 }
