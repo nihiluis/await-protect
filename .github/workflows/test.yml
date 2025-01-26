@@ -44,5 +44,4 @@ jobs:
         with:
           version: latest
       - run: pnpm install
-      - run: pnpm prettier:check
-      - run: pnpm lint:check
+      - run: pnpm lint
