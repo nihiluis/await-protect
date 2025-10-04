@@ -1,4 +1,4 @@
-type Result<R, T extends Error> = [R | undefined, T | undefined]
+type Result<R, T extends Error> = [R, undefined] | [undefined, T]
 
 /**
  * Wraps a Promise in a Result tuple that contains either the resolved value or the error.
@@ -12,15 +12,12 @@ type Result<R, T extends Error> = [R | undefined, T | undefined]
 export default async function protect<R, T extends Error>(
   fn: Promise<R>
 ): Promise<Result<R, T>> {
-  const res: Result<R, T> = [undefined, undefined]
-
   try {
-    await fn.then((val) => (res[0] = val)).catch((err: T) => (res[1] = err))
+    const val = await fn
+    return [val, undefined]
   } catch (e) {
-    res[1] = e as T
+    return [undefined, e as T]
   }
-
-  return res
 }
 
 export { protect }
@@ -37,20 +34,14 @@ export { protect }
 export async function protectAll<R, T extends Error>(
   fns: Promise<R>[]
 ): Promise<Result<R, T>[]> {
-  const tuples: Result<R, T>[] = []
-
-  const newFns = fns.map(async (fn, i) => {
-    tuples[i] = [undefined, undefined]
-
+  const protectedFns = fns.map(async (fn): Promise<Result<R, T>> => {
     try {
       const val = await fn
-      return (tuples[i]![0] = val)
+      return [val, undefined]
     } catch (err) {
-      return (tuples[i]![1] = err as T)
+      return [undefined, err as T]
     }
   })
 
-  await Promise.all(newFns)
-
-  return tuples
+  return Promise.all(protectedFns)
 }

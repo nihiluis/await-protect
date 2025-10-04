@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { protect } from './index.js'
 
-type Result<R, T extends Error> = [R | undefined, T | undefined]
+type Result<R, T extends Error> = [R, undefined] | [undefined, T]
 
 /**
  * Wraps a Promise in a Result tuple that contains either the validated resolved value or the error.
