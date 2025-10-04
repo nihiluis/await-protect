@@ -28,19 +28,19 @@
   },
   "homepage": "https://github.com/nihiluis/await-protect#readme",
   "peerDependencies": {
-    "zod": "^3.24.1"
+    "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@eslint/js": "^9.19.0",
-    "@types/node": "^22.10.10",
-    "eslint": "^9.19.0",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
-    "globals": "^15.14.0",
-    "prettier": "^3.4.2",
-    "typescript": "^5.5.4",
-    "typescript-eslint": "^8.21.0",
-    "vitest": "^3.0.4"
+    "@eslint/js": "^9.37.0",
+    "@types/node": "^24.6.2",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.45.0",
+    "vitest": "^3.2.4"
   },
   "files": [
     "dist"
